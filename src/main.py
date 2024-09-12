@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from common import set_log, set_common
 from logging import getLogger, config
 from src.chart import create_candlestick_chart, create_candlestick_chart_trend
@@ -22,7 +23,8 @@ if __name__ == '__main__':
             df = read_data(common_conf['num_bars'], common_conf['start_pos'], symbol, timeframe)
             upsert_data(df, logger, symbol, timeframe)
 
+    today = datetime.now().strftime("%Y-%m-%d")
     for symbol in common_conf['symbols']:
         for timeframe in common_conf['timeframes']:
-            create_candlestick_chart(common_conf['database'], symbol, timeframe, '2020-01-01', '2024-09-11')
-            create_candlestick_chart_trend(common_conf['database'], symbol, timeframe, '2020-01-01', '2024-09-11', logger)
+            create_candlestick_chart(common_conf['database'], symbol, timeframe, common_conf['start_date'], today)
+            create_candlestick_chart_trend(common_conf['database'], symbol, timeframe, common_conf['start_date'], today, logger)

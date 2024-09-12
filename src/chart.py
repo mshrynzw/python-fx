@@ -119,26 +119,5 @@ def create_candlestick_chart_trend(db, symbol, timeframe, start_date, end_date, 
         yaxis_title='Price',
         xaxis_rangeslider_visible=False
     )
-    
-    # ボタンの設定
-    updatemenus = [
-        dict(
-            type="buttons",
-            direction="right",
-            x=0.7,
-            y=1.2,
-            showactive=True,
-            buttons=[
-                dict(label="SMA表示",
-                     method="update",
-                     args=[{"visible": [True, True, True, True]}]),
-                dict(label="SMA非表示",
-                     method="update",
-                     args=[{"visible": [True, False, True, True]}]),
-            ]
-        )
-    ]
-    
-    fig.update_layout(updatemenus=updatemenus)
-    
+
     fig.show()
