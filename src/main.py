@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from common import set_log, set_common
 from logging import getLogger, config
-from src.chart import create_candlestick_chart
+from src.chart import create_candlestick_chart, create_candlestick_chart_trend
 from src.database import create_database, create_symbol_table, upsert_data
 from src.metatrader5 import read_data
 
@@ -25,3 +25,4 @@ if __name__ == '__main__':
     for symbol in common_conf['symbols']:
         for timeframe in common_conf['timeframes']:
             create_candlestick_chart(common_conf['database'], symbol, timeframe, '2020-01-01', '2024-09-11')
+            create_candlestick_chart_trend(common_conf['database'], symbol, timeframe, '2020-01-01', '2024-09-11', logger)
