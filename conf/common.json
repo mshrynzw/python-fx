@@ -1,5 +1,16 @@
 {
-  "SMA": [
+  "database": "fx",
+  "num_bars": 1000,
+  "start_pos": 0,
+  "symbols": [
+    "usdjpy"
+  ],
+  "timeframes": [
+    "H1",
+    "H4",
+    "D1"
+  ],
+  "smas": [
     {
       "window": 25,
       "color": "blue"
@@ -8,7 +19,7 @@
       "window": 75,
       "color": "green"
     },
-        {
+    {
       "window": 200,
       "color": "yellow"
     }

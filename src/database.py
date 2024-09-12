@@ -6,7 +6,6 @@ from mysql.connector import Error
 from mysql.connector import errorcode
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 
@@ -21,17 +20,21 @@ def connect_database():
     return conn, conn.cursor()
 
 
-def create_database(logger):
+def create_database(db, logger):
     try:
         conn = mysql.connector.connect(
-        host=os.getenv('MYSQL_HOST'),
-        user=os.getenv('MYSQL_USER'),
-        password=os.getenv('MYSQL_PASSWORD'),
+            host=os.getenv('MYSQL_HOST'),
+            user=os.getenv('MYSQL_USER'),
+            password=os.getenv('MYSQL_PASSWORD'),
         )
         cursor = conn.cursor()
 
         # Create database
-        cursor.execute("CREATE DATABASE IF NOT EXISTS fx")
+        cursor.execute(f"SHOW DATABASES LIKE '{db}'")
+        result = cursor.fetchone()
+
+        if not result:
+            cursor.execute(f"CREATE DATABASE {db}")
 
         # Commit changes and close the connection
         conn.commit()
@@ -50,14 +53,17 @@ def create_database(logger):
             conn.close()
 
 
-def create_symbol_table(logger, table_name):
+def create_symbol_table(db, logger, table_name):
     try:
         conn, cursor = connect_database()
 
-        cursor.execute("USE fx")
+        cursor.execute(f"USE {db}")
 
-        # Create table
-        cursor.execute(f'''
+        cursor.execute(f"SHOW TABLES LIKE '{table_name}'")
+        result = cursor.fetchone()
+
+        if not result:
+            cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS {table_name} (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 timeframe VARCHAR(255),
@@ -72,8 +78,8 @@ def create_symbol_table(logger, table_name):
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 UNIQUE KEY unique_timeframe_time (timeframe, time)
             )
-        ''')
-        # Commit changes and close the connection
+            ''')
+
         conn.commit()
         cursor.close()
         conn.close()
@@ -90,7 +96,7 @@ def create_symbol_table(logger, table_name):
             conn.close()
 
 
-def upsert_data(df, logger, table_name, timeframe):
+def upsert_data(df, table_name, timeframe):
     conn, cursor = connect_database()
 
     cursor.execute("USE fx")
@@ -131,15 +137,15 @@ def upsert_data(df, logger, table_name, timeframe):
         conn.close()
 
 
-def fetch_data(timeframe, start_date, end_date):
+def fetch_data(db, symbol,timeframe, start_date, end_date):
     conn, cursor = connect_database()
 
-    cursor.execute("USE fx")
+    cursor.execute(f"USE {db}")
 
     try:
-        query = """
+        query = f"""
         SELECT time, open, high, low, close
-        FROM usdjpy
+        FROM {symbol}
         WHERE timeframe = %s AND time BETWEEN %s AND %s
         ORDER BY time
         """

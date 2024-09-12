@@ -1,15 +1,14 @@
 import plotly.graph_objects as go
-
 from src.common import set_common
 from src.database import fetch_data
 
 
-def create_candlestick_chart(timeframe, start_date, end_date):
+def create_candlestick_chart(db, symbol, timeframe, start_date, end_date):
     common_conf = set_common()
 
-    df = fetch_data(timeframe, start_date, end_date)
+    df = fetch_data(db, symbol, timeframe, start_date, end_date)
 
-    for sma in common_conf['SMA']:
+    for sma in common_conf['smas']:
         df['SMA' + str(sma['window'])] = df['close'].rolling(window=sma['window']).mean()
     
     fig = go.Figure(data=[go.Candlestick(
@@ -20,7 +19,7 @@ def create_candlestick_chart(timeframe, start_date, end_date):
         close=df['close']
     )])
 
-    for sma in common_conf['SMA']:
+    for sma in common_conf['smas']:
         fig.add_trace(go.Scatter(
             x=df['time'],
             y=df['SMA' + str(sma['window'])],
@@ -29,7 +28,7 @@ def create_candlestick_chart(timeframe, start_date, end_date):
         ))
     
     fig.update_layout(
-        title=f'USD/JPY {timeframe} Candlestick Chart',
+        title=f'{symbol.upper()} {timeframe}',
         xaxis_title='Date',
         yaxis_title='Price',
         xaxis_rangeslider_visible=False

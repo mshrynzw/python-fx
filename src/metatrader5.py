@@ -8,8 +8,16 @@ def read_data(num_bars, start_pos, symbol, timeframe):
         print("MT5への接続に失敗しました")
         quit()
 
+    match timeframe:
+        case "H1":
+            tf = mt5.TIMEFRAME_H1
+        case "H4":
+            tf = mt5.TIMEFRAME_H4
+        case "D1":
+            tf = mt5.TIMEFRAME_D1
+
     # シンボルとタイムフレームを指定してデータを取得
-    rates = mt5.copy_rates_from_pos(symbol, timeframe, start_pos, num_bars)
+    rates = mt5.copy_rates_from_pos(symbol.upper(), tf, start_pos, num_bars)
 
     # データをPandasのDataFrameに変換
     df = pd.DataFrame(rates)
