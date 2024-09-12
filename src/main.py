@@ -20,7 +20,7 @@ if __name__ == '__main__':
     for symbol in common_conf['symbols']:
         for timeframe in common_conf['timeframes']:
             df = read_data(common_conf['num_bars'], common_conf['start_pos'], symbol, timeframe)
-            upsert_data(df, symbol, timeframe)
+            upsert_data(df, logger, symbol, timeframe)
 
     for symbol in common_conf['symbols']:
         for timeframe in common_conf['timeframes']:
