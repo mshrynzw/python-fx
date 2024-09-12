@@ -1,6 +1,16 @@
 {
-  "AAA": "aaa",
-  "BBB": {
-    "CCC": "ccc"
-  }
+  "SMA": [
+    {
+      "window": 25,
+      "color": "blue"
+    },
+    {
+      "window": 75,
+      "color": "green"
+    },
+        {
+      "window": 200,
+      "color": "yellow"
+    }
+  ]
 }
